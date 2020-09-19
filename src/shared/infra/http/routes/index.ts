@@ -4,6 +4,6 @@ import usersRouter from '@modules/users/infra/http/routes/users.routes';
 
 const router = Router();
 
-router.use('/', usersRouter);
+router.use('/users', usersRouter);
 
 export default router;
