@@ -1,6 +1,6 @@
-import ICreateUserDTO from "../dtos/ICreateUserDTO";
-import User from "../infra/typeorm/entities/User";
+import { inject, injectable } from 'tsyringe';
 import IUsersRepository from "../repositories/IUsersRepository";
+import User from "../infra/typeorm/entities/User";
 
 interface Request {
     name: string;
@@ -8,15 +8,15 @@ interface Request {
     password: string;
 }
 
+@injectable()
 export default class CreateUserService {
-    public repository: IUsersRepository;
-
-    constructor(repository: IUsersRepository) {
-        this.repository = repository;
-    }
+    constructor(
+        @inject('UsersRepository')
+        private usersRepository: IUsersRepository,
+    ) {}
 
     public async execute({ name, email, password }: Request): Promise<User> {
-        const user = await this.repository.create({ name, email, password });
+        const user = await this.usersRepository.create({ name, email, password });
 
         return user;
     }
