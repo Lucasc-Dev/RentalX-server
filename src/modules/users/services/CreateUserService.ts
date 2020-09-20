@@ -9,14 +9,14 @@ interface Request {
 }
 
 export default class CreateUserService {
-    private repository: IUsersRepository;
+    public repository: IUsersRepository;
 
     constructor(repository: IUsersRepository) {
         this.repository = repository;
     }
 
     public async execute({ name, email, password }: Request): Promise<User> {
-        const user = this.repository.create({ name, email, password });
+        const user = await this.repository.create({ name, email, password });
 
         return user;
     }
