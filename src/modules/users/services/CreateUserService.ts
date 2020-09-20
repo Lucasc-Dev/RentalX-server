@@ -1,6 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 import IUsersRepository from "../repositories/IUsersRepository";
 import User from "../infra/typeorm/entities/User";
+import AppError from '@shared/errors/AppError';
 
 interface Request {
     name: string;
@@ -16,6 +17,12 @@ export default class CreateUserService {
     ) {}
 
     public async execute({ name, email, password }: Request): Promise<User> {
+        const findEmail = await this.usersRepository.findByEmail(email);
+
+        if (findEmail) {
+            throw new AppError('Email already registred');
+        }
+
         const user = await this.usersRepository.create({ name, email, password });
 
         return user;
