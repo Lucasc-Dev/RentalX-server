@@ -4,7 +4,7 @@ import { container } from 'tsyringe';
 
 export default class ProfilesController {
     public async show(request: Request, response: Response): Promise<Response> {
-        const { id } = request.body;
+        const { id } = request.user;
 
         const showProfile = container.resolve(ShowProfileService);
 

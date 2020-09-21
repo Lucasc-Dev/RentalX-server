@@ -14,9 +14,9 @@ export default class ShowProfileService {
 
     public async execute(id: string): Promise<User> {
         const user = await this.usersRepository.findById(id);
-
+        
         if (!user) {
-            throw new AppError('ID not found');
+            throw new AppError('Invalid JWT token.');
         }
 
         return user;
