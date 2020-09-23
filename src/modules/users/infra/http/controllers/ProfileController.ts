@@ -1,4 +1,5 @@
 import ShowProfileService from "@modules/users/services/ShowProfileService";
+import UpdateProfileService from "@modules/users/services/UpdateProfileService";
 import { Request, Response } from "express";
 import { container } from 'tsyringe';
 
@@ -17,10 +18,10 @@ export default class ProfilesController {
         const { id } = request.user;
         const { name, email, oldPassword, password } = request.body;
 
-        const updateProfile = container.resolve();
+        const updateProfile = container.resolve(UpdateProfileService);
 
-        const user = updateProfile.execute({ name, email, oldPassword, password });
+        const user = await updateProfile.execute({ id, name, email, oldPassword, password });
 
-        return response.json();
+        return response.json(user);
     }
 }

@@ -31,10 +31,12 @@ export default class UpdateProfileService {
             throw new AppError('User not found');
         }
 
-        const findEmail = await this.usersRepository.findByEmail(email);
-
-        if (findEmail) {
-            throw new AppError('Email already registered');
+        if (email !== user.email) {
+            const findEmail = await this.usersRepository.findByEmail(email);
+    
+            if (findEmail) {
+                throw new AppError('Email already registered');
+            }
         }
 
         if (oldPassword) {
