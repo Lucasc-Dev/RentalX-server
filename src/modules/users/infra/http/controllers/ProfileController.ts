@@ -12,4 +12,15 @@ export default class ProfilesController {
 
         return response.json(user);
     }
+
+    public async update(request: Request, response: Response): Promise<Response> {
+        const { id } = request.user;
+        const { name, email, oldPassword, password } = request.body;
+
+        const updateProfile = container.resolve();
+
+        const user = updateProfile.execute({ name, email, oldPassword, password });
+
+        return response.json();
+    }
 }
