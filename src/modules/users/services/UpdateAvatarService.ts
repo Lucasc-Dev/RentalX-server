@@ -30,11 +30,9 @@ export default class UpdateAvatarService {
         }
 
         if (user.image) {
-            const { image } = user;
+            const image = user.image.split('/files/');
 
-            const imageName = image.split('/files/');
-
-            await this.storageProvider.deleteFile(imageName[imageName.length - 1]);
+            await this.storageProvider.deleteFile(image[image.length - 1]);
         }
 
         await this.storageProvider.saveFile(filename);
