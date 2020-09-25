@@ -8,7 +8,7 @@ import uploadConfig from "@config/upload";
 export default class DiskStorageProvider implements IStorageProvider {
     public async saveFile(file: string): Promise<string> {
         await fs.promises.rename(
-            path.resolve(uploadConfig.multer.tempFolder, file),
+            path.resolve(uploadConfig.multer.tmpFolder, file),
             path.resolve(uploadConfig.multer.uploadFolder, file),
         );
 
