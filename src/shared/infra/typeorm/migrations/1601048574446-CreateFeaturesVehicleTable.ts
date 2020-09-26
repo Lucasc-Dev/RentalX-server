@@ -5,7 +5,7 @@ export class CreateFeaturesVehicleTable1601048574446 implements MigrationInterfa
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: 'featureshehicle',
+                name: 'featuresvehicle',
                 columns: [
                     {
                         name: 'id',
