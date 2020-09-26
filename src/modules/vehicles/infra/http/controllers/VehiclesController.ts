@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-export default class CarsController {
+export default class VehiclesController {
     public async create(request: Request, response: Response): Promise<Response> {
         const { id } = request.user;
 
