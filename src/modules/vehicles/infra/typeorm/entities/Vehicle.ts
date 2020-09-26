@@ -21,10 +21,10 @@ export default class Vehicle {
     daily_price: number;
 
     @Column()
-    fuel: string;
+    fuel: 'gasoline' | 'ethanol' | 'eletrical';
 
     @Column()
-    gear: string;
+    gear: 'automatic' | 'manual';
 
     @CreateDateColumn()
     created_at: Date;
