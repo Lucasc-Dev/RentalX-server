@@ -3,4 +3,5 @@ import Vehicle from "../infra/typeorm/entities/Vehicle";
 
 export default interface IVehiclesRepository {
     create(data: ICreateVehicleDTO): Promise<Vehicle>;
+    findByPlate(plate: string): Promise<Vehicle | undefined>;
 }

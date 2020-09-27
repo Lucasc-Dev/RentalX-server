@@ -19,4 +19,10 @@ export default class VehiclesRepository implements IVehiclesRepository {
 
         return vehicle;
     }
+
+    public async findByPlate(plate: string): Promise<Vehicle | undefined> {
+        const vehicle = this.ormRepository.findOne({ where: { plate } });
+
+        return vehicle;
+    }
 }
