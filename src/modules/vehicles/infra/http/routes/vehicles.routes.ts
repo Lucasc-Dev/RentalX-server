@@ -10,6 +10,7 @@ const router = Router();
 
 router.use(ensureAuthenticated);
 
+router.get('/', vehiclesController.index);
 router.post('/', vehiclesController.create);
 
 export default router;
