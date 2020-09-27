@@ -7,8 +7,8 @@ import IVehiclesRepository from "../repositories/IVehiclesRepository";
 interface Request {
     user_id: string;
     page: number;
-    fuel: string; 
-    gear: string; 
+    fuel?: string; 
+    gear?: string; 
     min_range: number; 
     max_range: number;
 }
@@ -30,7 +30,11 @@ export default class ListVehiclesService {
             throw new AppError('User not found');
         }
 
-        const vehicles = await this.vehiclesRepository.findAll({
+        if (min_range < 0) {
+            throw new AppError('Minimum range cannot be less than 0');
+        }
+
+        const vehicles = await this.vehiclesRepository.listWithFilters({
             page,
             fuel,
             gear,

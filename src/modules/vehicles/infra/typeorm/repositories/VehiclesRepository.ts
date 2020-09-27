@@ -27,29 +27,25 @@ export default class VehiclesRepository implements IVehiclesRepository {
         return vehicle;
     }
 
-    public async findAll({ page, fuel, gear, min_range, max_range }: IListVehiclesDTO): Promise<Vehicle[]> {
-        const vehicles = this.ormRepository
+    public async listWithFilters({ page, min_range, max_range, fuel, gear }: IListVehiclesDTO): Promise<Vehicle[]> {
+        const query = this.ormRepository
             .createQueryBuilder('vehicle')
-            .where('vehicle.fuel = :fuel', { fuel })
-            .andWhere('vehicle.gear = :gear', { gear })
-            .andWhere('vehicle.daily_price > :min_range', { min_range })
-            .andWhere('vehicle.daily_price < :max_range', { max_range })
+            .where(
+                'vehicle.daily_price >= :min_range and vehicle.daily_price <= :max_range', 
+                { min_range, max_range },
+            )
             .skip(page * 5)
-            .take(5)
-            .getMany();
+            .take(5);
 
-        /* let photos = await 
-        getRepository(Vehicle)
-        .createQueryBuilder("photo") // first argument is an alias. Alias is what you are selecting - photos. You must specify it.
-        .innerJoinAndSelect("photo.metadata", "metadata")
-        .leftJoinAndSelect("photo.albums", "album")
-        .where("photo.isPublished = true")
-        .andWhere("(photo.name = :photoName OR photo.name = :bearName)")
-        .orderBy("photo.id", "DESC")
-        .skip(5)
-        .take(10)
-        .setParameters({ photoName: "My", bearName: "Mishka" })
-        .getMany(); */
+        if (fuel) {
+            query.andWhere('vehicle.fuel = :fuel', { fuel });
+        }
+        
+        if (gear) {
+            query.andWhere('vehicle.gear = :gear', { gear });
+        }
+
+        const vehicles = await query.getMany();
 
         return vehicles;
     }
