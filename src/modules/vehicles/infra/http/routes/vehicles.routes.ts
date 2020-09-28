@@ -18,6 +18,7 @@ router.use(ensureAuthenticated);
 
 router.get('/', vehiclesController.index);
 router.post('/', vehiclesController.create);
+router.put('/:vehicle_id', vehiclesController.update);
 
 router.patch('/image/:vehicle_id', upload.single('image'), vehicleImageController.update);
 

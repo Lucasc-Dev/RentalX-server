@@ -26,7 +26,7 @@ export default class VehiclesRepository implements IVehiclesRepository {
     }
 
     public async findById(id: string): Promise<Vehicle | undefined> {
-        const vehicle = this.ormRepository.findOne({ where: { id }});
+        const vehicle = this.ormRepository.findOne(id);
 
         return vehicle;
     }

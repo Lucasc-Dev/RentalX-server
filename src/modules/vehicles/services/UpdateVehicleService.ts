@@ -1,12 +1,14 @@
 import { inject, injectable } from "tsyringe";
 
 import IUsersRepository from "@modules/users/repositories/IUsersRepository";
-import AppError from "@shared/errors/AppError";
 import IVehiclesRepository from "../repositories/IVehiclesRepository";
+
 import Vehicle from "../infra/typeorm/entities/Vehicle";
+import AppError from "@shared/errors/AppError";
 
 interface Request {
     user_id: string;
+    vehicle_id: string;
     name: string;
     brand: string;
     model: string;
@@ -17,8 +19,8 @@ interface Request {
 }
 
 @injectable()
-export default class CreateVehicleService {
-    constructor(
+export default class UpdateVehicleService {
+    constructor (
         @inject('UsersRepository')
         private usersRepository: IUsersRepository,
 
@@ -26,9 +28,9 @@ export default class CreateVehicleService {
         private vehiclesRepository: IVehiclesRepository,
     ) {}
 
-    public async execute(
-        { user_id, name, brand, model, plate, daily_price, fuel, gear }: Request
-    ): Promise<Vehicle> {
+    public async execute({ 
+        user_id, vehicle_id, name, brand, model, plate, fuel, gear, daily_price
+    }: Request): Promise<Vehicle> {
         const user = await this.usersRepository.findById(user_id);
 
         if (!user) {
@@ -39,25 +41,33 @@ export default class CreateVehicleService {
             throw new AppError('Only administrator users can create vehicles');
         }
 
-        const findVehicleByPlate = await this.vehiclesRepository.findByPlate(plate);
+        const vehicle = await this.vehiclesRepository.findById(vehicle_id);
 
-        if (findVehicleByPlate) {
-            throw new AppError('Car plate is already registered');
+        if (!vehicle) {
+            throw new AppError('Vehicle not found');
         }
-        
+
+        if (vehicle.plate !== plate) {
+            const findVehicleByPlate = await this.vehiclesRepository.findByPlate(plate);
+    
+            if (findVehicleByPlate) {
+                throw new AppError('Car plate is already registered');
+            }
+        }
+
         if (daily_price < 0) {
             throw new AppError('Daily price cannot be less than 0');
         }
 
-        const vehicle = await this.vehiclesRepository.create({
-            name,
-            brand,
-            model,
-            plate,
-            daily_price,
-            fuel,
-            gear,
-        });
+        vehicle.name = name;
+        vehicle. brand = brand;
+        vehicle.model = model;
+        vehicle.plate = plate;
+        vehicle.fuel = fuel;
+        vehicle.gear = gear;
+        vehicle.daily_price = daily_price;
+
+        await this.vehiclesRepository.save(vehicle);
 
         return vehicle;
     }

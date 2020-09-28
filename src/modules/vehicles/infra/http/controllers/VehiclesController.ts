@@ -1,5 +1,6 @@
 import CreateVehicleService from "@modules/vehicles/services/CreateVehicleService";
 import ListVehiclesService from "@modules/vehicles/services/ListVehiclesService";
+import UpdateVehicleService from "@modules/vehicles/services/UpdateVehicleService";
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 
@@ -38,6 +39,37 @@ export default class VehiclesController {
         });
 
         return response.json(vehicles);
+    }
+
+    public async update(request: Request, response: Response): Promise<Response> {
+        const { id: user_id } = request.user;
+        const { vehicle_id } = request.params;
+
+        const {
+            name,
+            brand,
+            model,
+            fuel,
+            gear,
+            plate,
+            daily_price,
+        } = request.body;
+
+        const updateVehicle = container.resolve(UpdateVehicleService);
+
+        const vehicle = await updateVehicle.execute({ 
+            user_id,
+            vehicle_id,
+            name,
+            brand,
+            model,
+            fuel,
+            gear,
+            plate,
+            daily_price,
+        });
+
+        return response.json(vehicle);
     }
 
     public async create(request: Request, response: Response): Promise<Response> {
