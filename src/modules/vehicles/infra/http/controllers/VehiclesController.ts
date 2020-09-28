@@ -1,7 +1,9 @@
 import CreateVehicleService from "@modules/vehicles/services/CreateVehicleService";
+import DeleteVehicleService from "@modules/vehicles/services/DeleteVehicleService";
 import ListVehiclesService from "@modules/vehicles/services/ListVehiclesService";
+import ShowVehicleService from "@modules/vehicles/services/ShowVehicleService";
 import UpdateVehicleService from "@modules/vehicles/services/UpdateVehicleService";
-import { Request, Response } from "express";
+import { request, Request, response, Response } from "express";
 import { container } from "tsyringe";
 
 interface RequestBody {
@@ -14,6 +16,17 @@ interface RequestBody {
 }
 
 export default class VehiclesController {
+    public async show(request: Request, response: Response): Promise<Response> {
+        const { id: user_id } = request.user;
+        const { vehicle_id } = request.params;
+
+        const showVehicle = container.resolve(ShowVehicleService);
+
+        const vehicle = await showVehicle.execute({ user_id, vehicle_id });
+
+        return response.json(vehicle);
+    }
+    
     public async index(request: Request, response: Response): Promise<Response> {
         const { id: user_id } = request.user;
         
@@ -98,5 +111,16 @@ export default class VehiclesController {
         });
 
         return response.json(vehicle);
+    }
+
+    public async delete(request: Request, response: Response): Promise<Response> {
+        const { id: user_id } = request.user;
+        const { vehicle_id } = request.params;
+
+        const deleteVehicle = container.resolve(DeleteVehicleService);
+
+        await deleteVehicle.execute({ user_id, vehicle_id });
+
+        return response.json();
     }
 }

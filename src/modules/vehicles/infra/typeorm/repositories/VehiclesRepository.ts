@@ -25,6 +25,10 @@ export default class VehiclesRepository implements IVehiclesRepository {
         await this.ormRepository.save(vehicle);
     }
 
+    public async delete(id: string): Promise<void> {
+        await this.ormRepository.delete(id);
+    }
+
     public async findById(id: string): Promise<Vehicle | undefined> {
         const vehicle = this.ormRepository.findOne(id);
 
