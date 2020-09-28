@@ -21,6 +21,15 @@ export default class Vehicle {
     daily_price: number;
 
     @Column()
+    image: string;
+
+    @Column()
+    relevance: number;
+
+    @Column()
+    available: number;
+
+    @Column()
     fuel: 'gasoline' | 'ethanol' | 'eletrical';
 
     @Column()

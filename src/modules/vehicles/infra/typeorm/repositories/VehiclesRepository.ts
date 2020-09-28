@@ -34,6 +34,8 @@ export default class VehiclesRepository implements IVehiclesRepository {
                 'vehicle.daily_price >= :min_range and vehicle.daily_price <= :max_range', 
                 { min_range, max_range },
             )
+            .andWhere("vehicle.image != '' and vehicle.available = true")
+            .orderBy('vehicle.relevance')
             .skip(page * 5)
             .take(5);
 
