@@ -4,6 +4,6 @@ export default interface ICreateVehicleDTO {
     model: string;
     plate: string;
     daily_price: number;
-    fuel: 'gasoline' | 'ethanol' | 'eletrical';
+    fuel: 'gasoline' | 'flex' | 'eletrical';
     gear: 'manual' | 'automatic';
 }

@@ -30,7 +30,7 @@ export default class Vehicle {
     available: number;
 
     @Column()
-    fuel: 'gasoline' | 'ethanol' | 'eletrical';
+    fuel: 'gasoline' | 'flex' | 'eletrical';
 
     @Column()
     gear: 'automatic' | 'manual';

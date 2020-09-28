@@ -6,11 +6,12 @@ import IVehiclesRepository from "../repositories/IVehiclesRepository";
 
 interface Request {
     user_id: string;
-    page: number;
-    fuel?: string; 
-    gear?: string; 
-    min_range: number; 
-    max_range: number;
+    page?: number;
+    fuel?: 'gasoline' | 'flex' | 'eletrical'; 
+    gear?: 'manual' | 'automatic';
+    orderBy?: 'relevance' | 'lowest' | 'highest';
+    min_range?: number; 
+    max_range?: number;
 }
 
 @injectable()
@@ -23,21 +24,29 @@ export default class ListVehiclesService {
         private vehiclesRepository: IVehiclesRepository,
     ) {}
 
-    public async execute({ user_id, page, fuel, gear, max_range, min_range }: Request): Promise<Vehicle[]> {
+    public async execute({ user_id, page, fuel, gear, orderBy, max_range, min_range }: Request): Promise<Vehicle[]> {
         const user = await this.usersRepository.findById(user_id);
 
-        if (!user) {
+        if (!user)
             throw new AppError('User not found');
-        }
+        
+        if (!page)
+            page = 0;
+        
+        if (!orderBy)
+            orderBy = 'relevance';
+        
+        if (!min_range)
+            min_range = 0;
 
-        if (min_range < 0) {
-            throw new AppError('Minimum range cannot be less than 0');
-        }
-
-        const vehicles = await this.vehiclesRepository.listWithFilters({
+        if (!max_range)
+            max_range = 100000;
+        
+        const vehicles = await this.vehiclesRepository.listVehicles({
             page,
             fuel,
             gear,
+            orderBy,
             max_range,
             min_range,
         });

@@ -27,17 +27,29 @@ export default class VehiclesRepository implements IVehiclesRepository {
         return vehicle;
     }
 
-    public async listWithFilters({ page, min_range, max_range, fuel, gear }: IListVehiclesDTO): Promise<Vehicle[]> {
-        const query = this.ormRepository
-            .createQueryBuilder('vehicle')
-            .where(
-                'vehicle.daily_price >= :min_range and vehicle.daily_price <= :max_range', 
-                { min_range, max_range },
-            )
-            .andWhere("vehicle.image != '' and vehicle.available = true")
-            .orderBy('vehicle.relevance')
-            .skip(page * 5)
-            .take(5);
+    public async listVehicles({ page, min_range, max_range, fuel, gear, orderBy }: IListVehiclesDTO): Promise<Vehicle[]> {
+        const query = this.ormRepository.createQueryBuilder('vehicle');
+        query.where(
+            'vehicle.daily_price >= :min_range and vehicle.daily_price <= :max_range', 
+            { min_range, max_range },        
+        ).andWhere(
+            "vehicle.image != '' and vehicle.available = true"
+        );
+
+        switch (orderBy) {
+            case 'relevance':
+                query.orderBy('vehicle.relevance', 'DESC');
+                break;
+            case 'lowest':
+                query.orderBy('vehicle.daily_price', 'ASC');
+                break;
+            case 'highest':
+                query.orderBy('vehicle.daily_price', 'DESC');
+                break;
+            default: 
+                query.orderBy('vehicle.relevance', 'DESC');
+                break;
+        }
 
         if (fuel) {
             query.andWhere('vehicle.fuel = :fuel', { fuel });
@@ -46,6 +58,8 @@ export default class VehiclesRepository implements IVehiclesRepository {
         if (gear) {
             query.andWhere('vehicle.gear = :gear', { gear });
         }
+
+        query.skip(page * 5).take(5)
 
         const vehicles = await query.getMany();
 

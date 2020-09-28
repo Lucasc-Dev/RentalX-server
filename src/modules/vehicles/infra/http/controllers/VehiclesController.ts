@@ -4,11 +4,12 @@ import { Request, Response } from "express";
 import { container } from "tsyringe";
 
 interface RequestBody {
-    page: number;
-    min_range: number;
-    max_range: number;
-    fuel?: string;
-    gear?: string;
+    page?: number;
+    fuel?: 'gasoline' | 'flex' | 'eletrical'; 
+    gear?: 'manual' | 'automatic';
+    orderBy?: 'relevance' | 'lowest' | 'highest';
+    min_range?: number;
+    max_range?: number;
 }
 
 export default class VehiclesController {
@@ -19,6 +20,7 @@ export default class VehiclesController {
             page, 
             fuel, 
             gear, 
+            orderBy,
             min_range,
             max_range, 
         } = request.query as unknown as RequestBody;
@@ -30,6 +32,7 @@ export default class VehiclesController {
             page,
             fuel,
             gear,
+            orderBy,
             min_range,
             max_range,
         });
