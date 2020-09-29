@@ -7,6 +7,7 @@ export default interface IVehiclesRepository {
     save(vehicle: Vehicle): Promise<void>;
     create(data: ICreateVehicleDTO): Promise<Vehicle>;
     findById(id: string): Promise<Vehicle | undefined>;
+    findVehicle(id: string): Promise<Vehicle | undefined>;
     findByPlate(plate: string): Promise<Vehicle | undefined>;
     listVehicles(data: IListVehiclesDTO): Promise<Vehicle[]>;
 }

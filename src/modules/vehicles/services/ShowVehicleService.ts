@@ -29,14 +29,10 @@ export default class ShowVehicleService {
             throw new AppError('User not found');
         }
         
-        let vehicle = await this.vehiclesRepository.findById(vehicle_id);
+        const vehicle = await this.vehiclesRepository.findVehicle(vehicle_id);
 
         if (!vehicle) {
-            vehicle = await this.vehiclesRepository.findByPlate(vehicle_id);
-
-            if (!vehicle) {
-                throw new AppError('Vehicle not found');
-            }
+            throw new AppError('Vehicle not found');
         }
 
         return vehicle;
