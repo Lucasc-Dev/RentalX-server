@@ -4,6 +4,7 @@ import Rental from "../entities/Rental";
 
 import IRentalsRepository from "@modules/rentals/repositories/IRentalsRepository";
 import ICreateRentalDTO from "@modules/rentals/dtos/ICreateRentalDTO";
+import Vehicle from "@modules/vehicles/infra/typeorm/entities/Vehicle";
 
 export default class RentalsRepository implements IRentalsRepository {
     private ormRepository: Repository<Rental>;

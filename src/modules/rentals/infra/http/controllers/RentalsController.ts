@@ -1,6 +1,7 @@
-import CreateRentService from "@modules/rentals/services/CreateRentService";
 import { Request, Response } from "express";
 import { container } from "tsyringe";
+
+import CreateRentService from "@modules/rentals/services/CreateRentService";
 
 export default class RentalsController {
     public async create(request: Request, response: Response): Promise<Response> {

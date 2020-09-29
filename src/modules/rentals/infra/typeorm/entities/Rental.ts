@@ -1,6 +1,6 @@
 import User from "@modules/users/infra/typeorm/entities/User";
 import Vehicle from "@modules/vehicles/infra/typeorm/entities/Vehicle";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('rentals')
 export default class Rental {
@@ -10,13 +10,15 @@ export default class Rental {
     @Column()
     user_id: string;
     
-    @Column()
+    @ManyToOne(() => User)
+    @JoinColumn({name: 'user_id'})
     user: User;
 
     @Column()
     vehicle_id: string;
 
-    @Column()
+    @ManyToOne(() => Vehicle)
+    @JoinColumn({name: 'vehicle_id'})
     vehicle: Vehicle;
 
     @Column()

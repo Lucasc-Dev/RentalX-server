@@ -27,9 +27,6 @@ export default class Vehicle {
     relevance: number;
 
     @Column()
-    available: number;
-
-    @Column()
     fuel: 'gasoline' | 'flex' | 'eletrical';
 
     @Column()
