@@ -1,10 +1,8 @@
-import { container, inject, injectable } from "tsyringe";
+import { inject, injectable } from "tsyringe";
 
 import IUsersRepository from "@modules/users/repositories/IUsersRepository";
 import IVehiclesRepository from "@modules/vehicles/repositories/IVehiclesRepository";
 import IRentalsRepository from "../repositories/IRentalsRepository";
-
-import VerifyVehicleAvailabilityService from './VerifyVehicleAvailabilityService';
 
 import AppError from "@shared/errors/AppError";
 import Rental from "../infra/typeorm/entities/Rental";
@@ -62,13 +60,10 @@ export default class CreateRentService {
             throw new AppError('Cannot rent a car for more than two months of distance');
         }
 
-        const verifyVehicleAvailability = container.resolve(VerifyVehicleAvailabilityService);
-
-        const vehicles = await verifyVehicleAvailability.execute({ 
-            vehicle_id, start_date, end_date 
+        const verifyRental = await this.rentalsRepository.findInPeriod({
+            vehicle_id, start_date, end_date
         });
-
-        if (vehicles.length !== 0) {
+        if (verifyRental) {
             throw new AppError('There is already a rental in this period');
         }
 

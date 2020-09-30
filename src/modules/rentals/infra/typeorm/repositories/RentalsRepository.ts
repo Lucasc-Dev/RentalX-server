@@ -1,4 +1,4 @@
-import { getRepository, Repository } from "typeorm";
+import { getRepository, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, Repository } from "typeorm";
 
 import Rental from "../entities/Rental";
 
@@ -29,7 +29,27 @@ export default class RentalsRepository implements IRentalsRepository {
     public async findInPeriod({ 
         vehicle_id, start_date, end_date 
     }: IFindRentalInPeriodDTO): Promise<Rental[]> {
-        const rentals = await this.ormRepository.find({ where: { vehicle_id } });
+        const rentals = await this.ormRepository
+            .createQueryBuilder('rental')
+            .where(
+                `rental.vehicle_id = :vehicle_id AND 
+                 rental.start_date >= :start_date AND 
+                 rental.start_date <= :end_date`,
+                { vehicle_id, start_date, end_date },
+            )
+            .orWhere(
+                `rental.vehicle_id = :vehicle_id AND 
+                 rental.end_date >= :start_date AND 
+                 rental.end_date <= :end_date`,
+                { vehicle_id, start_date, end_date },
+            )
+            .orWhere(
+                `rental.vehicle_id = :vehicle_id AND 
+                 rental.start_date <= :start_date AND 
+                 rental.end_date >= :end_date`,
+                { vehicle_id, start_date, end_date },
+            )
+            .getMany();
 
         return rentals;
     }
