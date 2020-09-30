@@ -3,6 +3,7 @@ import { inject, injectable } from "tsyringe";
 import IVehiclesRepository from "@modules/vehicles/repositories/IVehiclesRepository";
 import IRentalsRepository from "../repositories/IRentalsRepository";
 import AppError from "@shared/errors/AppError";
+import Rental from "../infra/typeorm/entities/Rental";
 
 interface Request {
     vehicle_id: string;
@@ -11,7 +12,7 @@ interface Request {
 }
 
 @injectable()
-export default class CreateRentService {
+export default class VerifyVehicleAvailabilityService {
     constructor(
         @inject('VehiclesRepository')
         private vehiclesRepository: IVehiclesRepository,
@@ -20,13 +21,13 @@ export default class CreateRentService {
         private rentalsRepository: IRentalsRepository,
     ) {}
 
-    public async execute({ vehicle_id, start_date, end_date }: Request): Promise<void> {
+    public async execute({ vehicle_id, start_date, end_date }: Request): Promise<Rental[]> {
         const vehicle = await this.vehiclesRepository.findVehicle(vehicle_id);
 
         if (!vehicle) {
             throw new AppError('Vehicle not found');
         }
 
-        
+        return [];
     }
 }

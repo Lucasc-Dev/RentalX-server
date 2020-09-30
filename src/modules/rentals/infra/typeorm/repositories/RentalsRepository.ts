@@ -5,6 +5,7 @@ import Rental from "../entities/Rental";
 import IRentalsRepository from "@modules/rentals/repositories/IRentalsRepository";
 import ICreateRentalDTO from "@modules/rentals/dtos/ICreateRentalDTO";
 import Vehicle from "@modules/vehicles/infra/typeorm/entities/Vehicle";
+import IFindRentalInPeriodDTO from "@modules/rentals/dtos/IFindRentalInPeriodDTO";
 
 export default class RentalsRepository implements IRentalsRepository {
     private ormRepository: Repository<Rental>;
@@ -23,5 +24,13 @@ export default class RentalsRepository implements IRentalsRepository {
 
     public async save(rental: Rental): Promise<void> {
         await this.ormRepository.save(rental);
+    }
+
+    public async findInPeriod({ 
+        vehicle_id, start_date, end_date 
+    }: IFindRentalInPeriodDTO): Promise<Rental[]> {
+        const rentals = await this.ormRepository.find({ where: { vehicle_id } });
+
+        return rentals;
     }
 }
