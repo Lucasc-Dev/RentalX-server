@@ -5,6 +5,7 @@ import Vehicle from "../entities/Vehicle";
 import IVehiclesRepository from "@modules/vehicles/repositories/IVehiclesRepository";
 import ICreateVehicleDTO from "@modules/vehicles/dtos/ICreateVehicleDTO";
 import IListVehiclesDTO from "@modules/vehicles/dtos/IListVehiclesDTO";
+import Rental from "@modules/rentals/infra/typeorm/entities/Rental";
 
 export default class VehiclesRepository implements IVehiclesRepository {
     private ormRepository: Repository<Vehicle>
@@ -51,12 +52,15 @@ export default class VehiclesRepository implements IVehiclesRepository {
         return vehicle;
     }
 
-    public async listVehicles({ page, min_range, max_range, fuel, gear, orderBy }: IListVehiclesDTO): Promise<Vehicle[]> {
+    public async listVehicles({ 
+        page, start_date, end_date, min_range, max_range, fuel, gear, orderBy 
+    }: IListVehiclesDTO): Promise<Vehicle[]> {
         const query = this.ormRepository.createQueryBuilder('vehicle');
         query.where(
             'vehicle.daily_price >= :min_range and vehicle.daily_price <= :max_range', 
             { min_range, max_range },        
-        ).andWhere(
+        )
+        .andWhere(
             "vehicle.image != ''"
         );
 

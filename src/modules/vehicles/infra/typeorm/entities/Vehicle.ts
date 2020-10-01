@@ -1,9 +1,14 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+
+import Rental from '@modules/rentals/infra/typeorm/entities/Rental';
 
 @Entity('vehicles')
 export default class Vehicle {
     @PrimaryGeneratedColumn('uuid')
     id: string;
+
+    @OneToMany(type => Rental, rental => rental.id)
+    rentals: Rental[];
 
     @Column()
     name: string;

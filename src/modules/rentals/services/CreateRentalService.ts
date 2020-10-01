@@ -63,7 +63,8 @@ export default class CreateRentService {
         const verifyRental = await this.rentalsRepository.findInPeriod({
             vehicle_id, start_date, end_date
         });
-        if (verifyRental) {
+
+        if (verifyRental.length !== 0) {
             throw new AppError('There is already a rental in this period');
         }
 

@@ -10,6 +10,8 @@ interface Request {
     fuel?: 'gasoline' | 'flex' | 'eletrical'; 
     gear?: 'manual' | 'automatic';
     orderBy?: 'relevance' | 'lowest' | 'highest';
+    start_date: Date;
+    end_date: Date;
     min_range?: number; 
     max_range?: number;
 }
@@ -24,7 +26,9 @@ export default class ListVehiclesService {
         private vehiclesRepository: IVehiclesRepository,
     ) {}
 
-    public async execute({ user_id, page, fuel, gear, orderBy, max_range, min_range }: Request): Promise<Vehicle[]> {
+    public async execute({ 
+        user_id, page, fuel, gear, orderBy, start_date, end_date, max_range, min_range 
+    }: Request): Promise<Vehicle[]> {
         const user = await this.usersRepository.findById(user_id);
 
         if (!user)
@@ -47,6 +51,8 @@ export default class ListVehiclesService {
             fuel,
             gear,
             orderBy,
+            start_date,
+            end_date,
             max_range,
             min_range,
         });
