@@ -1,10 +1,11 @@
+import { Request, Response } from "express";
+import { container } from "tsyringe";
+
 import CreateVehicleService from "@modules/vehicles/services/CreateVehicleService";
 import DeleteVehicleService from "@modules/vehicles/services/DeleteVehicleService";
 import ListVehiclesService from "@modules/vehicles/services/ListVehiclesService";
 import ShowVehicleService from "@modules/vehicles/services/ShowVehicleService";
 import UpdateVehicleService from "@modules/vehicles/services/UpdateVehicleService";
-import { request, Request, response, Response } from "express";
-import { container } from "tsyringe";
 
 interface RequestBody {
     page?: number;
@@ -39,6 +40,11 @@ export default class VehiclesController {
             max_range, 
         } = request.query as unknown as RequestBody;
 
+        const { start_date: start, end_date: end } = request.body;
+
+        const start_date = new Date(start);
+        const end_date = new Date(end);
+
         const listVehicles = container.resolve(ListVehiclesService);
 
         const vehicles = await listVehicles.execute({ 
@@ -47,6 +53,8 @@ export default class VehiclesController {
             fuel,
             gear,
             orderBy,
+            start_date,
+            end_date,
             min_range,
             max_range,
         });

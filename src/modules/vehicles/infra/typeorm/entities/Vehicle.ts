@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import Rental from '@modules/rentals/infra/typeorm/entities/Rental';
 
@@ -7,7 +7,7 @@ export default class Vehicle {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @OneToMany(type => Rental, rental => rental.id)
+    @OneToMany(type => Rental, rental => rental.vehicle)
     rentals: Rental[];
 
     @Column()

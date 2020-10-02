@@ -11,12 +11,14 @@ export default class Rental {
     user_id: string;
     
     @ManyToOne(type => User, user => user.id)
+    @JoinColumn({ name: 'user_id' })
     user: User;
 
     @Column()
     vehicle_id: string;
 
-    @ManyToOne(type => Vehicle, vehicle => vehicle.id)
+    @ManyToOne(() => Vehicle, vehicle => vehicle.rentals)
+    @JoinColumn({ name: 'vehicle_id' })
     vehicle: Vehicle;
 
     @Column()

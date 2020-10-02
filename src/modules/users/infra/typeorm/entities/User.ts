@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import Rental from '@modules/rentals/infra/typeorm/entities/Rental';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn } from 'typeorm';
 
 @Entity('users')
 export default class User {
@@ -19,6 +20,10 @@ export default class User {
 
     @Column()
     password: string;
+
+    @OneToMany(type => Rental, rental => rental.user_id)
+    @JoinColumn({name: 'id'})
+    rentals: Rental[];
 
     @CreateDateColumn()
     created_at: Date;

@@ -1,10 +1,9 @@
-import { getRepository, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, Repository } from "typeorm";
+import { Brackets, getRepository, Repository } from "typeorm";
 
 import Rental from "../entities/Rental";
 
 import IRentalsRepository from "@modules/rentals/repositories/IRentalsRepository";
 import ICreateRentalDTO from "@modules/rentals/dtos/ICreateRentalDTO";
-import Vehicle from "@modules/vehicles/infra/typeorm/entities/Vehicle";
 import IFindRentalInPeriodDTO from "@modules/rentals/dtos/IFindRentalInPeriodDTO";
 
 export default class RentalsRepository implements IRentalsRepository {
@@ -29,7 +28,7 @@ export default class RentalsRepository implements IRentalsRepository {
     public async findInPeriod({ 
         vehicle_id, start_date, end_date 
     }: IFindRentalInPeriodDTO): Promise<Rental[]> {
-        const rentals = await this.ormRepository
+        /* const rentals = await this.ormRepository
             .createQueryBuilder('rental')
             .where(
                 `rental.vehicle_id = :vehicle_id AND 
@@ -49,7 +48,26 @@ export default class RentalsRepository implements IRentalsRepository {
                  rental.end_date >= :end_date`,
                 { vehicle_id, start_date, end_date },
             )
-            .getMany();
+            .getMany(); */
+
+        const rentals = await this.ormRepository
+            .createQueryBuilder('rental')
+            .where('rental.vehicle_id = :vehicle_id', { vehicle_id })
+            .andWhere(
+                new Brackets(qb => {
+                    qb.where(
+                        'rental.start_date BETWEEN :start_date AND :end_date',
+                        { start_date, end_date },
+                    ).orWhere(
+                        'rental.end_date BETWEEN :start_date AND :end_date',
+                        { start_date, end_date },
+                    ).orWhere(
+                        `:start_date BETWEEN rental.start_date AND rental.end_date AND
+                         :end_date BETWEEN rental.start_date AND rental.end_date`,
+                        { start_date, end_date },
+                    )
+                })
+            ).getMany();
 
         return rentals;
     }

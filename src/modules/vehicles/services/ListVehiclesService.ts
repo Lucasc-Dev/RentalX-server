@@ -1,7 +1,9 @@
-import IUsersRepository from "@modules/users/repositories/IUsersRepository";
-import AppError from "@shared/errors/AppError";
 import { inject, injectable } from "tsyringe";
+
+import AppError from "@shared/errors/AppError";
 import Vehicle from "../infra/typeorm/entities/Vehicle";
+
+import IUsersRepository from "@modules/users/repositories/IUsersRepository";
 import IVehiclesRepository from "../repositories/IVehiclesRepository";
 
 interface Request {
@@ -46,7 +48,7 @@ export default class ListVehiclesService {
         if (!max_range)
             max_range = 100000;
         
-        const vehicles = await this.vehiclesRepository.listVehicles({
+        const vehicles = await this.vehiclesRepository.listAvailableVehicles({
             page,
             fuel,
             gear,

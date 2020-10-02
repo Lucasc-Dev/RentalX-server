@@ -1,17 +1,17 @@
-import { getRepository, Repository } from "typeorm";
+import { Brackets, getRepository, Repository } from "typeorm";
 
 import Vehicle from "../entities/Vehicle";
 
 import IVehiclesRepository from "@modules/vehicles/repositories/IVehiclesRepository";
 import ICreateVehicleDTO from "@modules/vehicles/dtos/ICreateVehicleDTO";
 import IListVehiclesDTO from "@modules/vehicles/dtos/IListVehiclesDTO";
-import Rental from "@modules/rentals/infra/typeorm/entities/Rental";
 
 export default class VehiclesRepository implements IVehiclesRepository {
     private ormRepository: Repository<Vehicle>
 
     constructor() {
         this.ormRepository = getRepository(Vehicle);
+
     }
 
     public async create(data: ICreateVehicleDTO): Promise<Vehicle> {
@@ -52,18 +52,31 @@ export default class VehiclesRepository implements IVehiclesRepository {
         return vehicle;
     }
 
-    public async listVehicles({ 
+    public async listAvailableVehicles({ 
         page, start_date, end_date, min_range, max_range, fuel, gear, orderBy 
     }: IListVehiclesDTO): Promise<Vehicle[]> {
-        const query = this.ormRepository.createQueryBuilder('vehicle');
-        query.where(
-            'vehicle.daily_price >= :min_range and vehicle.daily_price <= :max_range', 
-            { min_range, max_range },        
-        )
-        .andWhere(
-            "vehicle.image != ''"
-        );
-
+        const query = this.ormRepository
+            .createQueryBuilder('vehicle')
+            .leftJoin('vehicle.rentals', 'rental')
+            .where(
+                'vehicle.daily_price >= :min_range AND vehicle.daily_price <= :max_range', 
+                { min_range, max_range },        
+            ).andWhere(
+                new Brackets(qb => {
+                    qb.where(
+                        'rental.start_date NOT BETWEEN :start_date AND :end_date',
+                        { start_date, end_date },
+                    ).andWhere(
+                        'rental.end_date NOT BETWEEN :start_date AND :end_date',
+                        { start_date, end_date },
+                    ).andWhere(
+                        `:start_date NOT BETWEEN rental.start_date AND rental.end_date AND
+                         :end_date NOT BETWEEN rental.start_date AND rental.end_date`,
+                        { start_date, end_date },
+                    )
+                })
+            );
+            
         switch (orderBy) {
             case 'relevance':
                 query.orderBy('vehicle.relevance', 'DESC');
