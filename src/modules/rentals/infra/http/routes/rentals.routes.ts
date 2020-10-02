@@ -10,6 +10,7 @@ const router = Router();
 
 router.use(ensureAuthenticated);
 
+router.get('/', rentalsController.index);
 router.post('/', rentalsController.create);
 
 export default router;

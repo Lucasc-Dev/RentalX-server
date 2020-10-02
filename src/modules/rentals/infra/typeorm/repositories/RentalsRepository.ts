@@ -28,28 +28,6 @@ export default class RentalsRepository implements IRentalsRepository {
     public async findInPeriod({ 
         vehicle_id, start_date, end_date 
     }: IFindRentalInPeriodDTO): Promise<Rental[]> {
-        /* const rentals = await this.ormRepository
-            .createQueryBuilder('rental')
-            .where(
-                `rental.vehicle_id = :vehicle_id AND 
-                 rental.start_date >= :start_date AND 
-                 rental.start_date <= :end_date`,
-                { vehicle_id, start_date, end_date },
-            )
-            .orWhere(
-                `rental.vehicle_id = :vehicle_id AND 
-                 rental.end_date >= :start_date AND 
-                 rental.end_date <= :end_date`,
-                { vehicle_id, start_date, end_date },
-            )
-            .orWhere(
-                `rental.vehicle_id = :vehicle_id AND 
-                 rental.start_date <= :start_date AND 
-                 rental.end_date >= :end_date`,
-                { vehicle_id, start_date, end_date },
-            )
-            .getMany(); */
-
         const rentals = await this.ormRepository
             .createQueryBuilder('rental')
             .where('rental.vehicle_id = :vehicle_id', { vehicle_id })
@@ -68,6 +46,19 @@ export default class RentalsRepository implements IRentalsRepository {
                     )
                 })
             ).getMany();
+
+        return rentals;
+    }
+
+    public async listUserRentals(id: string, page: number): Promise<Rental[]> {
+        const rentals = await this.ormRepository
+            .createQueryBuilder('rental')
+            .innerJoinAndSelect('rental.vehicle', 'vehicle')
+            .where('rental.user_id = :id', { id })
+            .orderBy('rental.created_at', 'ASC')
+            .skip(page * 5)
+            .take(5)
+            .getMany();
 
         return rentals;
     }
