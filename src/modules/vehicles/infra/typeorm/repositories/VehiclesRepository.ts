@@ -73,7 +73,7 @@ export default class VehiclesRepository implements IVehiclesRepository {
                         `:start_date NOT BETWEEN rental.start_date AND rental.end_date AND
                          :end_date NOT BETWEEN rental.start_date AND rental.end_date`,
                         { start_date, end_date },
-                    )
+                    ).orWhere('rental IS NULL')
                 })
             );
             
@@ -100,10 +100,10 @@ export default class VehiclesRepository implements IVehiclesRepository {
             query.andWhere('vehicle.gear = :gear', { gear });
         }
 
-        query.skip(page * 5).take(5)
+        query.skip(page * 5).take(5);
 
         const vehicles = await query.getMany();
-
+ 
         return vehicles;
     }
 }

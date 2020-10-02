@@ -35,6 +35,10 @@ export default class ShowVehicleService {
             throw new AppError('Vehicle not found');
         }
 
+        vehicle.relevance++;
+
+        await this.vehiclesRepository.save(vehicle);
+
         return vehicle;
     }
 }
