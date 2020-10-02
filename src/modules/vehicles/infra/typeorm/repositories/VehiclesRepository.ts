@@ -43,7 +43,11 @@ export default class VehiclesRepository implements IVehiclesRepository {
     }
 
     public async findVehicle(id: string): Promise<Vehicle | undefined> {
-        let vehicle = await this.ormRepository.findOne(id);
+        let vehicle = await this.ormRepository
+            .createQueryBuilder('vehicle')
+            .leftJoinAndSelect('vehicle.features', 'feature')
+            .where('vehicle.id = :id', { id })
+            .getOne();
 
         if (!vehicle) {
             vehicle = await this.ormRepository.findOne({ where: { plate: id } });
@@ -76,7 +80,7 @@ export default class VehiclesRepository implements IVehiclesRepository {
                     ).orWhere('rental IS NULL')
                 })
             );
-            
+
         switch (orderBy) {
             case 'relevance':
                 query.orderBy('vehicle.relevance', 'DESC');

@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import Vehicle from "./Vehicle";
 
 @Entity('features')
 export default class Feature {
@@ -13,6 +14,9 @@ export default class Feature {
     
     @Column()
     icon: string;
+
+    @ManyToMany(type => Vehicle, vehicle => vehicle.id)
+    vehicles: Vehicle[]
 
     @CreateDateColumn()
     created_at: Date;
