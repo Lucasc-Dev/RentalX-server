@@ -12,6 +12,10 @@ export default class FeaturesRepository implements IFeaturesRepository {
         this.ormRepository = getRepository(Feature);
     }
 
+    public async save(feature: Feature): Promise<void> {
+        await this.ormRepository.save(feature);
+    }
+
     public async create(data: ICreateFeatureDTO): Promise<Feature> {
         const feature = this.ormRepository.create(data);
 
