@@ -9,6 +9,7 @@ import UpdateVehicleService from "@modules/vehicles/services/UpdateVehicleServic
 
 interface RequestBody {
     page?: number;
+    search?: string;
     fuel?: 'gasoline' | 'flex' | 'eletrical'; 
     gear?: 'manual' | 'automatic';
     orderBy?: 'relevance' | 'lowest' | 'highest';
@@ -35,6 +36,7 @@ export default class VehiclesController {
             page, 
             fuel, 
             gear, 
+            search,
             orderBy,
             min_range,
             max_range, 
@@ -51,7 +53,8 @@ export default class VehiclesController {
             user_id, 
             page,
             fuel,
-            gear,
+            gear, 
+            search,
             orderBy,
             start_date,
             end_date,

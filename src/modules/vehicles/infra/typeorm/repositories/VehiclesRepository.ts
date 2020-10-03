@@ -64,7 +64,7 @@ export default class VehiclesRepository implements IVehiclesRepository {
     }
 
     public async listAvailableVehicles({ 
-        page, start_date, end_date, min_range, max_range, fuel, gear, orderBy 
+        page, start_date, end_date, min_range, max_range, fuel, gear, search, orderBy 
     }: IListVehiclesDTO): Promise<Vehicle[]> {
         const query = this.ormRepository
             .createQueryBuilder('vehicle')
@@ -101,6 +101,13 @@ export default class VehiclesRepository implements IVehiclesRepository {
             default: 
                 query.orderBy('vehicle.relevance', 'DESC');
                 break;
+        }
+
+        if (search) {
+            query.andWhere(
+                'vehicle.name ILIKE :search OR vehicle.brand ILIKE :search',
+                { search: `%${search}%` }
+            );
         }
 
         if (fuel) {

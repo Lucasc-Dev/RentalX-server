@@ -9,6 +9,7 @@ import IVehiclesRepository from "../repositories/IVehiclesRepository";
 interface Request {
     user_id: string;
     page?: number;
+    search?: string;
     fuel?: 'gasoline' | 'flex' | 'eletrical'; 
     gear?: 'manual' | 'automatic';
     orderBy?: 'relevance' | 'lowest' | 'highest';
@@ -29,7 +30,7 @@ export default class ListVehiclesService {
     ) {}
 
     public async execute({ 
-        user_id, page, fuel, gear, orderBy, start_date, end_date, max_range, min_range 
+        user_id, page, search, fuel, gear, orderBy, start_date, end_date, max_range, min_range 
     }: Request): Promise<Vehicle[]> {
         const user = await this.usersRepository.findById(user_id);
 
@@ -52,6 +53,7 @@ export default class ListVehiclesService {
             page,
             fuel,
             gear,
+            search,
             orderBy,
             start_date,
             end_date,
