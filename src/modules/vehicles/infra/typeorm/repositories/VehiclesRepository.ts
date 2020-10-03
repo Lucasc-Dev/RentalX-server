@@ -5,13 +5,16 @@ import Vehicle from "../entities/Vehicle";
 import IVehiclesRepository from "@modules/vehicles/repositories/IVehiclesRepository";
 import ICreateVehicleDTO from "@modules/vehicles/dtos/ICreateVehicleDTO";
 import IListVehiclesDTO from "@modules/vehicles/dtos/IListVehiclesDTO";
+import IAddFeatureToVehicleDTO from "@modules/vehicles/dtos/IAddFeatureToVehicleDTO";
+import FeatureVehicle from "../entities/FeatureVehicle";
 
 export default class VehiclesRepository implements IVehiclesRepository {
     private ormRepository: Repository<Vehicle>
+    private featuresVehicleRepository: Repository<FeatureVehicle>;
 
     constructor() {
         this.ormRepository = getRepository(Vehicle);
-
+        this.featuresVehicleRepository = getRepository(FeatureVehicle);
     }
 
     public async create(data: ICreateVehicleDTO): Promise<Vehicle> {
@@ -45,12 +48,16 @@ export default class VehiclesRepository implements IVehiclesRepository {
     public async findVehicle(id: string): Promise<Vehicle | undefined> {
         let vehicle = await this.ormRepository
             .createQueryBuilder('vehicle')
-            .leftJoinAndSelect('vehicle.features', 'feature')
+            .leftJoinAndSelect('vehicle.feature_vehicle', 'feature_vehicle')
             .where('vehicle.id = :id', { id })
             .getOne();
 
         if (!vehicle) {
-            vehicle = await this.ormRepository.findOne({ where: { plate: id } });
+            vehicle = await this.ormRepository
+            .createQueryBuilder('vehicle')
+            .leftJoinAndSelect('vehicle.feature_vehicle', 'feature_vehicle')
+            .where('vehicle.plate = :id', { id })
+            .getOne();
         }
 
         return vehicle;
@@ -109,5 +116,20 @@ export default class VehiclesRepository implements IVehiclesRepository {
         const vehicles = await query.getMany();
  
         return vehicles;
+    }
+
+    public async addFeatureToVehicle(data: IAddFeatureToVehicleDTO): Promise<Vehicle | undefined> {
+        const featureVehicle = this.featuresVehicleRepository.create(data);
+
+        await this.featuresVehicleRepository.save(featureVehicle);
+
+        const vehicle = this.ormRepository
+            .createQueryBuilder('vehicle')
+            .leftJoinAndSelect('vehicle.feature_vehicle', 'feature_vehicle')
+            .leftJoinAndSelect('feature_vehicle.feature', 'feature')
+            .where('vehicle.id = :id', { id: featureVehicle.vehicle_id })
+            .getOne();
+
+        return vehicle;
     }
 }

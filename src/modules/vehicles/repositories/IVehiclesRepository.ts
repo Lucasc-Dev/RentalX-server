@@ -1,3 +1,4 @@
+import IAddFeatureToVehicleDTO from "../dtos/IAddFeatureToVehicleDTO";
 import ICreateVehicleDTO from "../dtos/ICreateVehicleDTO";
 import IListVehiclesDTO from "../dtos/IListVehiclesDTO";
 import Vehicle from "../infra/typeorm/entities/Vehicle";
@@ -10,4 +11,5 @@ export default interface IVehiclesRepository {
     findVehicle(id: string): Promise<Vehicle | undefined>;
     findByPlate(plate: string): Promise<Vehicle | undefined>;
     listAvailableVehicles(data: IListVehiclesDTO): Promise<Vehicle[]>;
+    addFeatureToVehicle(data: IAddFeatureToVehicleDTO): Promise<Vehicle | undefined>;
 }

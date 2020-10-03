@@ -19,4 +19,10 @@ export default class FeaturesRepository implements IFeaturesRepository {
 
         return feature;
     }
+
+    public async findById(id: string): Promise<Feature | undefined> {
+        const feature = await this.ormRepository.findOne(id);
+
+        return feature;
+    }
 }

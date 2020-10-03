@@ -1,7 +1,7 @@
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import Rental from '@modules/rentals/infra/typeorm/entities/Rental';
-import Feature from './Feature';
+import FeatureVehicle from './FeatureVehicle';
 
 @Entity('vehicles')
 export default class Vehicle {
@@ -32,9 +32,8 @@ export default class Vehicle {
     @Column()
     relevance: number;
 
-    @ManyToMany(type => Feature)
-    @JoinTable()
-    features: Feature[];
+    @OneToMany(type => FeatureVehicle, feature => feature.vehicle)
+    feature_vehicle: FeatureVehicle;
 
     @Column()
     fuel: 'gasoline' | 'flex' | 'eletrical';

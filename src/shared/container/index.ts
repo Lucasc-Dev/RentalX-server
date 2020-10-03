@@ -19,19 +19,19 @@ import FeaturesRepository from '@modules/vehicles/infra/typeorm/repositories/Fea
 container.registerSingleton<IUsersRepository>(
     'UsersRepository',
     UsersRepository,
-)
+);
 
 container.registerSingleton<IVehiclesRepository>(
     'VehiclesRepository',
     VehiclesRepository,
-)
+);
 
 container.registerSingleton<IFeaturesRepository>(
     'FeaturesRepository',
     FeaturesRepository,
-)
+);
 
 container.registerSingleton<IRentalsRepository>(
     'RentalsRepository',
     RentalsRepository,
-)
+);

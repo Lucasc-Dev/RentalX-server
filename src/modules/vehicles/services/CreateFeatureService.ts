@@ -27,6 +27,10 @@ export default class CreateFeatureService {
             throw new AppError('User not found');
         }
 
+        if (user.role !== 'admin') {
+            throw new AppError('Only administrator users can create vehicles');
+        }
+
         const feature = this.featuresRepository.create({ name, description });
 
         return feature;
