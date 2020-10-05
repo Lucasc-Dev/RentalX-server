@@ -3,11 +3,12 @@ import Rental from "../infra/typeorm/entities/Rental";
 
 import ICreateRentalDTO from "../dtos/ICreateRentalDTO";
 import IFindRentalInPeriodDTO from "../dtos/IFindRentalInPeriodDTO";
+import IFindVehicleIdResponse from "../dtos/IFindVehicleIdResponseDTO";
 
 export default interface IRentalsRepository {
     save(rental: Rental): Promise<void>;
     create(data: ICreateRentalDTO): Promise<Rental>;
     listUserRentals(id: string, page: number): Promise<Rental[]>;
     findInPeriod(data: IFindRentalInPeriodDTO): Promise<Rental[]>;
-    //findFavoriteVehicle(user_id: string): Promise<Vehicle | undefined>;
+    findFavoriteVehicleId(user_id: string): Promise<IFindVehicleIdResponse | undefined>;
 }

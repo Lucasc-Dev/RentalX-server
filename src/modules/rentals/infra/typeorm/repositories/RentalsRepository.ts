@@ -6,6 +6,7 @@ import IRentalsRepository from "@modules/rentals/repositories/IRentalsRepository
 import ICreateRentalDTO from "@modules/rentals/dtos/ICreateRentalDTO";
 import IFindRentalInPeriodDTO from "@modules/rentals/dtos/IFindRentalInPeriodDTO";
 import Vehicle from "@modules/vehicles/infra/typeorm/entities/Vehicle";
+import IFindVehicleIdResponse from "@modules/rentals/dtos/IFindVehicleIdResponseDTO";
 
 export default class RentalsRepository implements IRentalsRepository {
     private ormRepository: Repository<Rental>;
@@ -62,5 +63,19 @@ export default class RentalsRepository implements IRentalsRepository {
             .getMany();
 
         return rentals;
+    }
+
+    
+    public async findFavoriteVehicleId(user_id: string): Promise<IFindVehicleIdResponse | undefined> {
+        const vehicle = await this.ormRepository
+            .createQueryBuilder('rentals')
+            .leftJoinAndSelect('rentals.vehicle', 'vehicle')
+            .select('vehicle_id, COUNT(vehicle_id)')
+            .where('rentals.user_id = :user_id', { user_id })
+            .groupBy('vehicle_id')
+            .orderBy('COUNT(vehicle_id)', 'DESC')
+            .getRawOne();
+            
+        return vehicle;
     }
 }
