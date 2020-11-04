@@ -19,6 +19,11 @@ interface Request {
     max_range?: number;
 }
 
+interface Response {
+    vehicles: Vehicle[];
+    count: number;
+}
+
 @injectable()
 export default class ListVehiclesService {
     constructor(
@@ -31,7 +36,7 @@ export default class ListVehiclesService {
 
     public async execute({ 
         user_id, page, search, fuel, gear, orderBy, start_date, end_date, max_range, min_range 
-    }: Request): Promise<Vehicle[]> {
+    }: Request): Promise<Response> {
         const user = await this.usersRepository.findById(user_id);
 
         if (!user)
@@ -49,7 +54,7 @@ export default class ListVehiclesService {
         if (!max_range)
             max_range = 100000;
         
-        const vehicles = await this.vehiclesRepository.listAvailableVehicles({
+        const [vehicles, count] = await this.vehiclesRepository.listAvailableVehicles({
             page,
             fuel,
             gear,
@@ -61,6 +66,6 @@ export default class ListVehiclesService {
             min_range,
         });
 
-        return vehicles;
+        return {vehicles, count};
     }
 }

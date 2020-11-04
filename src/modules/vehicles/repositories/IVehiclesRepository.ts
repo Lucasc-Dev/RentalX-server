@@ -10,6 +10,6 @@ export default interface IVehiclesRepository {
     findById(id: string): Promise<Vehicle | undefined>;
     findVehicle(id: string): Promise<Vehicle | undefined>;
     findByPlate(plate: string): Promise<Vehicle | undefined>;
-    listAvailableVehicles(data: IListVehiclesDTO): Promise<Vehicle[]>;
+    listAvailableVehicles(data: IListVehiclesDTO): Promise<[Vehicle[], number]>;
     addFeatureToVehicle(data: IAddFeatureToVehicleDTO): Promise<Vehicle | undefined>;
 }

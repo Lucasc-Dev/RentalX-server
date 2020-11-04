@@ -65,7 +65,7 @@ export default class VehiclesRepository implements IVehiclesRepository {
 
     public async listAvailableVehicles({ 
         page, start_date, end_date, min_range, max_range, fuel, gear, search, orderBy 
-    }: IListVehiclesDTO): Promise<Vehicle[]> {
+    }: IListVehiclesDTO): Promise<[Vehicle[], number]> {
         const query = this.ormRepository
             .createQueryBuilder('vehicle')
             .leftJoin('vehicle.rentals', 'rental')
@@ -120,7 +120,7 @@ export default class VehiclesRepository implements IVehiclesRepository {
 
         query.skip(page * 5).take(5);
 
-        const vehicles = await query.getMany();
+        const vehicles = await query.getManyAndCount();
  
         return vehicles;
     }

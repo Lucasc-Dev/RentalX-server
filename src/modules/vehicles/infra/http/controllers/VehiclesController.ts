@@ -15,6 +15,8 @@ interface RequestBody {
     orderBy?: 'relevance' | 'lowest' | 'highest';
     min_range?: number;
     max_range?: number;
+    start_date: string;
+    end_date: string;
 }
 
 export default class VehiclesController {
@@ -40,9 +42,9 @@ export default class VehiclesController {
             orderBy,
             min_range,
             max_range, 
+            start_date: start,
+            end_date: end,
         } = request.query as unknown as RequestBody;
-
-        const { start_date: start, end_date: end } = request.body;
 
         const start_date = new Date(start);
         const end_date = new Date(end);
