@@ -52,7 +52,7 @@ export default class RentalsRepository implements IRentalsRepository {
         return rentals;
     }
 
-    public async listUserRentals(id: string, page: number): Promise<Rental[]> {
+    public async listUserRentals(id: string, page: number): Promise<[Rental[], number]> {
         const rentals = await this.ormRepository
             .createQueryBuilder('rental')
             .innerJoinAndSelect('rental.vehicle', 'vehicle')
@@ -60,7 +60,7 @@ export default class RentalsRepository implements IRentalsRepository {
             .orderBy('rental.created_at', 'ASC')
             .skip(page * 5)
             .take(5)
-            .getMany();
+            .getManyAndCount();
 
         return rentals;
     }

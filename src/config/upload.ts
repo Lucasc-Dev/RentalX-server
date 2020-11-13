@@ -10,7 +10,6 @@ export default {
     multer: {
         tmpFolder: tmpFolder,
         uploadFolder: path.resolve(tmpFolder, 'uploads'), 
-
         
         storage: multer.diskStorage({
             destination: tmpFolder,

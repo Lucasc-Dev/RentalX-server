@@ -11,6 +11,11 @@ interface Request {
     page?: number;
 }
 
+interface Response {
+    rentals: Rental[];
+    count: number;
+}
+
 @injectable()
 export default class ListUserentalsService {
     constructor(
@@ -21,7 +26,7 @@ export default class ListUserentalsService {
         private rentalsRepository: IRentalsRepository,
     ) {}
 
-    public async execute({ user_id, page }: Request): Promise<Rental[]> {
+    public async execute({ user_id, page }: Request): Promise<Response> {
         const user = await this.usersRepository.findById(user_id);
         
         if (!user) {
@@ -32,8 +37,8 @@ export default class ListUserentalsService {
             page = 0;
         }
 
-        const rentals = await this.rentalsRepository.listUserRentals(user_id, page);
+        const [rentals, count] = await this.rentalsRepository.listUserRentals(user_id, page);
 
-        return rentals;
+        return { rentals, count };
     }
 }
