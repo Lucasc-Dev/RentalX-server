@@ -23,7 +23,7 @@ export default class RentalsController {
             start_date: start, 
             end_date: end, 
         } = request.body;
-
+        console.log('a')
         const start_date = new Date(start);
         const end_date = new Date(end);
 

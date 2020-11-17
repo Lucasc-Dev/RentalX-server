@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
+    "@types/cors": "^2.8.8",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/multer": "^1.4.4",
     "bcrypt": "^5.0.0",
+    "celebrate": "^13.0.4",
     "class-transformer": "^0.3.1",
+    "cors": "^2.8.5",
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",

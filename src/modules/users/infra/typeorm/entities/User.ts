@@ -34,7 +34,7 @@ export default class User {
     @UpdateDateColumn()
     updated_at: Date;
 
-    @Expose({ name: 'avatar_url' })
+    @Expose({ name: 'image_url' })
     getAvatarUrl(): string {
         return this.image 
             ? `${process.env.UPLOAD_LINK}${this.image}`

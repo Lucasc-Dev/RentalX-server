@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { celebrate, Joi, Segments } from 'celebrate';
 import multer from 'multer';
 
 import uploadConfig from '@config/upload';
@@ -14,7 +15,16 @@ const featuresController = new FeaturesController();
 
 router.use(ensureAuthenticated);
 
-router.post('/', featuresController.create);
+router.post(
+    '/', 
+    celebrate({
+        [Segments.BODY]: {
+            name: Joi.string().required().min(2).max(30),
+            description: Joi.string().required().min(2).max(30),
+        }
+    }),
+    featuresController.create,
+);
 
 router.patch('/:feature_id', upload.single('icon'), featuresController.update);
 
