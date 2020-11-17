@@ -1,4 +1,5 @@
 import { inject, injectable } from "tsyringe";
+import { isBefore, differenceInCalendarDays } from 'date-fns';
 
 import IUsersRepository from "@modules/users/repositories/IUsersRepository";
 import IVehiclesRepository from "@modules/vehicles/repositories/IVehiclesRepository";
@@ -42,22 +43,20 @@ export default class CreateRentService {
 
         const currentDate = new Date();
 
-        if (start_date.getDate() <= currentDate.getDate()) {
-
-            if (start_date.getMonth() <= currentDate.getMonth()) {
-                throw new AppError('Cannot rent a vehicle in the past');
-            }
+        if (isBefore(end_date, start_date)) {
+            throw new AppError('The end date cannot be before the start date')
         }
 
-        if (end_date.getDate() <= start_date.getDate()) {
-
-            if (end_date.getMonth() <= start_date.getMonth()) {
-                throw new AppError('You must rent a car for at least 1 day');
-            }
+        if (isBefore(start_date, currentDate)) {
+            throw new AppError('Cannot rent a vehicle in the past');
         }
 
-        if (currentDate.getMonth() + 1 < end_date.getMonth()) {
-            throw new AppError('Cannot rent a car for more than two months of distance');
+        if (differenceInCalendarDays(end_date, start_date) < 1) {
+            throw new AppError('You must rent a car for at least 1 day');
+        }
+
+        if (differenceInCalendarDays(start_date, currentDate) > 90) {
+            throw new AppError('Cannot rent a car for more than three months of distance');
         }
 
         const verifyRental = await this.rentalsRepository.findInPeriod({
