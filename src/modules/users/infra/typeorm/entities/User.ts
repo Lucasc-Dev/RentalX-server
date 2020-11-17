@@ -1,5 +1,7 @@
-import Rental from '@modules/rentals/infra/typeorm/entities/Rental';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn } from 'typeorm';
+import { Exclude, Expose } from 'class-transformer';
+
+import Rental from '@modules/rentals/infra/typeorm/entities/Rental';
 
 @Entity('users')
 export default class User {
@@ -19,6 +21,7 @@ export default class User {
     role: string;
 
     @Column()
+    @Exclude()
     password: string;
 
     @OneToMany(type => Rental, rental => rental.user_id)
@@ -30,4 +33,11 @@ export default class User {
 
     @UpdateDateColumn()
     updated_at: Date;
+
+    @Expose({ name: 'avatar_url' })
+    getAvatarUrl(): string {
+        return this.image 
+            ? `${process.env.UPLOAD_LINK}${this.image}`
+            : `${process.env.UPLOAD_LINK}default-avatar.png`;
+    }
 }

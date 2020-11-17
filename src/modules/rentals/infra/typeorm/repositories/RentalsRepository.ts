@@ -57,7 +57,7 @@ export default class RentalsRepository implements IRentalsRepository {
             .createQueryBuilder('rental')
             .innerJoinAndSelect('rental.vehicle', 'vehicle')
             .where('rental.user_id = :id', { id })
-            .orderBy('rental.created_at', 'ASC')
+            .orderBy('rental.created_at', 'DESC')
             .skip(page * 5)
             .take(5)
             .getManyAndCount();
