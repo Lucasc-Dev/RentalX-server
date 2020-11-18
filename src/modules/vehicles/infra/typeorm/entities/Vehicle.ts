@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Up
 
 import Rental from '@modules/rentals/infra/typeorm/entities/Rental';
 import FeatureVehicle from './FeatureVehicle';
+import VehicleImage from './VehicleImage';
 
 @Entity('vehicles')
 export default class Vehicle {
@@ -27,9 +28,6 @@ export default class Vehicle {
     daily_price: number;
 
     @Column()
-    image: string;
-
-    @Column()
     relevance: number;
 
     @OneToMany(type => FeatureVehicle, feature => feature.vehicle)
@@ -40,6 +38,12 @@ export default class Vehicle {
 
     @Column()
     gear: 'automatic' | 'manual';
+
+    @OneToMany(type => VehicleImage, image => image.vehicle, { 
+        cascade: ['insert', 'update'],
+        eager: true,
+    })
+    images: VehicleImage[];
 
     @CreateDateColumn()
     created_at: Date;

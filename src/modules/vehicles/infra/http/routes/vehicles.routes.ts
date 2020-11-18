@@ -23,6 +23,7 @@ router.get('/', vehiclesController.index);
 router.get('/:vehicle_id', vehiclesController.show);
 router.post(
     '/', 
+    upload.array('images'),
     celebrate({
         [Segments.BODY]: {
             name: Joi.string().required().min(1).max(30),

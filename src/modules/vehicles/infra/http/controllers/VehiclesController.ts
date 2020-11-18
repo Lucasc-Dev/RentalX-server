@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { classToClass } from "class-transformer";
 import { container } from "tsyringe";
 
 import CreateVehicleService from "@modules/vehicles/services/CreateVehicleService";
@@ -28,7 +29,7 @@ export default class VehiclesController {
 
         const vehicle = await showVehicle.execute({ user_id, vehicle_id });
 
-        return response.json(vehicle);
+        return response.json(classToClass(vehicle));
     }
     
     public async index(request: Request, response: Response): Promise<Response> {
@@ -51,7 +52,7 @@ export default class VehiclesController {
 
         const listVehicles = container.resolve(ListVehiclesService);
 
-        const vehicles = await listVehicles.execute({ 
+        const listVehiclesResponse = await listVehicles.execute({ 
             user_id, 
             page,
             fuel,
@@ -63,6 +64,11 @@ export default class VehiclesController {
             min_range,
             max_range,
         });
+
+        const vehicles = {
+            vehicles: listVehiclesResponse.vehicles.map(vehicle => classToClass(vehicle)),
+            count: listVehiclesResponse.count,
+        }
 
         return response.json(vehicles);
     }
@@ -95,7 +101,7 @@ export default class VehiclesController {
             daily_price,
         });
 
-        return response.json(vehicle);
+        return response.json(classToClass(vehicle));
     }
 
     public async create(request: Request, response: Response): Promise<Response> {
@@ -109,6 +115,9 @@ export default class VehiclesController {
             fuel,
             gear,
         } = request.body;
+        const requestImages = request.files as Express.Multer.File[];
+console.log(requestImages);
+        const images = requestImages.map(file => ({ image: file.filename }));
 
         const createVehicle = container.resolve(CreateVehicleService);
 
@@ -121,9 +130,10 @@ export default class VehiclesController {
             daily_price,
             fuel,
             gear,
+            images,
         });
 
-        return response.json(vehicle);
+        return response.json(classToClass(vehicle));
     }
 
     public async delete(request: Request, response: Response): Promise<Response> {

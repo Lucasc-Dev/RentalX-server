@@ -48,7 +48,8 @@ export default class VehiclesRepository implements IVehiclesRepository {
     public async findVehicle(id: string): Promise<Vehicle | undefined> {
         let vehicle = await this.ormRepository
             .createQueryBuilder('vehicle')
-            .leftJoinAndSelect('vehicle.feature_vehicle', 'feature_vehicle')
+            .leftJoinAndSelect('vehicle.feature_vehicle', 'features')
+            .leftJoinAndSelect('vehicle.images', 'images')
             .where('vehicle.id = :id', { id })
             .getOne();
 
