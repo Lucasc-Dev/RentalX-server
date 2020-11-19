@@ -1,6 +1,4 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import FeatureVehicle from "./FeatureVehicle";
-import Vehicle from "./Vehicle";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('features')
 export default class Feature {
@@ -15,9 +13,6 @@ export default class Feature {
     
     @Column()
     icon: string;
-
-    @OneToMany(type => FeatureVehicle, featureVehicle => featureVehicle.feature)
-    feature_vehicle: FeatureVehicle[]
 
     @CreateDateColumn()
     created_at: Date;

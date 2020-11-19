@@ -1,16 +1,13 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import Rental from '@modules/rentals/infra/typeorm/entities/Rental';
-import FeatureVehicle from './FeatureVehicle';
 import VehicleImage from './VehicleImage';
+import Feature from './Feature';
 
 @Entity('vehicles')
 export default class Vehicle {
     @PrimaryGeneratedColumn('uuid')
     id: string;
-
-    @OneToMany(type => Rental, rental => rental.vehicle)
-    rentals: Rental[];
 
     @Column()
     name: string;
@@ -30,20 +27,27 @@ export default class Vehicle {
     @Column()
     relevance: number;
 
-    @OneToMany(type => FeatureVehicle, feature => feature.vehicle)
-    feature_vehicle: FeatureVehicle;
-
     @Column()
     fuel: 'gasoline' | 'flex' | 'eletrical';
 
     @Column()
     gear: 'automatic' | 'manual';
 
+    @ManyToMany(type => Feature, { 
+        cascade: ['insert', 'update'],
+        eager: true,
+    })
+    @JoinTable()
+    features: Feature[];
+
     @OneToMany(type => VehicleImage, image => image.vehicle, { 
         cascade: ['insert', 'update'],
         eager: true,
     })
     images: VehicleImage[];
+
+    @OneToMany(type => Rental, rental => rental.vehicle)
+    rentals: Rental[];
 
     @CreateDateColumn()
     created_at: Date;

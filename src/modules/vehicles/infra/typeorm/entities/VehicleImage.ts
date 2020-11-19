@@ -8,9 +8,6 @@ export default class VehicleImage {
     id: string;
 
     @Column()
-    vehicle_id: string;
-
-    @Column()
     image: string;
 
     @ManyToOne(type => Vehicle, vehicle => vehicle.images)
