@@ -4,5 +4,6 @@ import Feature from "../infra/typeorm/entities/Feature";
 export default interface IFeaturesRepository {
     save(feature: Feature): Promise<void>;
     create(data: ICreateFeatureDTO): Promise<Feature>;
+    findManyById(ids: string[]): Promise<Feature[]>;
     findById(id: string): Promise<Feature | undefined>;
 }

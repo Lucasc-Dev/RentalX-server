@@ -24,6 +24,15 @@ export default class FeaturesRepository implements IFeaturesRepository {
         return feature;
     }
 
+    public async findManyById(ids: string[]): Promise<Feature[]> {
+        const features = await this.ormRepository
+            .createQueryBuilder('feature')
+            .where('feature.id IN (:...ids)', { ids })
+            .getMany();
+
+        return features;
+    }
+
     public async findById(id: string): Promise<Feature | undefined> {
         const feature = await this.ormRepository.findOne(id);
 

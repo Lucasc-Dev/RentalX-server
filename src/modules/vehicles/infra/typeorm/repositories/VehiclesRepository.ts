@@ -6,15 +6,13 @@ import IVehiclesRepository from "@modules/vehicles/repositories/IVehiclesReposit
 import ICreateVehicleDTO from "@modules/vehicles/dtos/ICreateVehicleDTO";
 import IListVehiclesDTO from "@modules/vehicles/dtos/IListVehiclesDTO";
 import IAddFeatureToVehicleDTO from "@modules/vehicles/dtos/IAddFeatureToVehicleDTO";
-import FeatureVehicle from "../entities/FeatureVehicle";
+import Feature from "../entities/Feature";
 
 export default class VehiclesRepository implements IVehiclesRepository {
     private ormRepository: Repository<Vehicle>
-    private featuresVehicleRepository: Repository<FeatureVehicle>;
 
     constructor() {
         this.ormRepository = getRepository(Vehicle);
-        this.featuresVehicleRepository = getRepository(FeatureVehicle);
     }
 
     public async create(data: ICreateVehicleDTO): Promise<Vehicle> {
@@ -46,19 +44,10 @@ export default class VehiclesRepository implements IVehiclesRepository {
     }
 
     public async findVehicle(id: string): Promise<Vehicle | undefined> {
-        let vehicle = await this.ormRepository
-            .createQueryBuilder('vehicle')
-            .leftJoinAndSelect('vehicle.feature_vehicle', 'features')
-            .leftJoinAndSelect('vehicle.images', 'images')
-            .where('vehicle.id = :id', { id })
-            .getOne();
-
+        let vehicle = await this.ormRepository.findOne({ where: { id } })
+        
         if (!vehicle) {
-            vehicle = await this.ormRepository
-            .createQueryBuilder('vehicle')
-            .leftJoinAndSelect('vehicle.feature_vehicle', 'feature_vehicle')
-            .where('vehicle.plate = :id', { id })
-            .getOne();
+            vehicle = await this.ormRepository.findOne({ where: { plate: id } })
         }
 
         return vehicle;
@@ -70,6 +59,7 @@ export default class VehiclesRepository implements IVehiclesRepository {
         const query = this.ormRepository
             .createQueryBuilder('vehicle')
             .leftJoin('vehicle.rentals', 'rental')
+            .leftJoinAndSelect('vehicle.images', 'images')
             .where(
                 'vehicle.daily_price >= :min_range AND vehicle.daily_price <= :max_range', 
                 { min_range, max_range },        
@@ -126,17 +116,12 @@ export default class VehiclesRepository implements IVehiclesRepository {
         return vehicles;
     }
 
-    public async addFeatureToVehicle(data: IAddFeatureToVehicleDTO): Promise<Vehicle | undefined> {
-        const featureVehicle = this.featuresVehicleRepository.create(data);
-
-        await this.featuresVehicleRepository.save(featureVehicle);
-
-        const vehicle = this.ormRepository
+    public async addFeaturesToVehicle({ vehicle, features }: IAddFeatureToVehicleDTO): Promise<Vehicle | undefined> {
+        await this.ormRepository
             .createQueryBuilder('vehicle')
-            .leftJoinAndSelect('vehicle.feature_vehicle', 'feature_vehicle')
-            .leftJoinAndSelect('feature_vehicle.feature', 'feature')
-            .where('vehicle.id = :id', { id: featureVehicle.vehicle_id })
-            .getOne();
+            .relation(Vehicle, 'features')
+            .of(vehicle)
+            .add(features);
 
         return vehicle;
     }
