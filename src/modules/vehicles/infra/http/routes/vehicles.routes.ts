@@ -52,7 +52,7 @@ router.put(
     }),
     vehiclesController.update,
 );
-router.post('/:vehicle_id/:feature_id', vehicleFeaturesController.create);
+router.post('/:vehicle_id', vehicleFeaturesController.create);
 router.delete('/:vehicle_id', vehiclesController.delete);
 router.patch('/image/:vehicle_id', upload.single('image'), vehicleImageController.update);
 

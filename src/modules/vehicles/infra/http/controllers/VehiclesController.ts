@@ -52,7 +52,7 @@ export default class VehiclesController {
 
         const listVehicles = container.resolve(ListVehiclesService);
 
-        const listVehiclesResponse = await listVehicles.execute({ 
+        const vehicles = await listVehicles.execute({ 
             user_id, 
             page,
             fuel,
@@ -65,12 +65,7 @@ export default class VehiclesController {
             max_range,
         });
 
-        const vehicles = {
-            vehicles: listVehiclesResponse.vehicles.map(vehicle => classToClass(vehicle)),
-            count: listVehiclesResponse.count,
-        }
-
-        return response.json(vehicles);
+        return response.json(classToClass(vehicles));
     }
 
     public async update(request: Request, response: Response): Promise<Response> {
@@ -116,7 +111,7 @@ export default class VehiclesController {
             gear,
         } = request.body;
         const requestImages = request.files as Express.Multer.File[];
-console.log(requestImages);
+        
         const images = requestImages.map(file => ({ image: file.filename }));
 
         const createVehicle = container.resolve(CreateVehicleService);

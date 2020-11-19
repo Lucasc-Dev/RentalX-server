@@ -10,7 +10,7 @@ import IFeaturesRepository from "../repositories/IFeaturesRepository";
 interface Request {
     user_id: string;
     vehicle_id: string;
-    feature_id: string;
+    features: string[];
 }
 
 @injectable()
@@ -26,7 +26,7 @@ export default class AddFeatureToVehicleService {
         private featuresRepository: IFeaturesRepository,
     ) {}
 
-    public async execute({ user_id, vehicle_id, feature_id }: Request): Promise<Vehicle> {
+    public async execute({ user_id, vehicle_id, features }: Request): Promise<Vehicle> {
         const user = await this.usersRepository.findById(user_id);
 
         if (!user) {
@@ -43,19 +43,22 @@ export default class AddFeatureToVehicleService {
             throw new AppError('Vehicle not found');
         }
         
-        const feature = await this.featuresRepository.findById(feature_id);
+        const featuresQuery = await this.featuresRepository.findManyById(features);
         
-        
-        if (!vehicle) {
+        if (featuresQuery.length !== features.length) {
             throw new AppError('Feature not found');
         }
 
-        const vehicleFeature = await this.vehiclesRepository.addFeatureToVehicle({ feature_id, vehicle_id });
+        const featuresToAdd = featuresQuery.filter(feature => {
+            const containsFeature = vehicle.features.some(vehicleFeature => 
+                vehicleFeature.id === feature.id
+            );
 
-        if (!vehicleFeature) {
-            throw new AppError('Could not add this feature to this vehicle')
-        }
+            return !containsFeature && feature;
+        });
 
-        return vehicleFeature;
+        await this.vehiclesRepository.addFeaturesToVehicle({ features: featuresToAdd, vehicle });
+
+        return vehicle;
     }
 }
