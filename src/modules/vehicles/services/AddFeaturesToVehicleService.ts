@@ -14,7 +14,7 @@ interface Request {
 }
 
 @injectable()
-export default class AddFeatureToVehicleService {
+export default class AddFeaturesToVehicleService {
     constructor(
         @inject('UsersRepository')
         private usersRepository: IUsersRepository,

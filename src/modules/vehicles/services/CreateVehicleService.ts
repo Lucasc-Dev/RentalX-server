@@ -4,6 +4,9 @@ import IUsersRepository from "@modules/users/repositories/IUsersRepository";
 import AppError from "@shared/errors/AppError";
 import IVehiclesRepository from "../repositories/IVehiclesRepository";
 import Vehicle from "../infra/typeorm/entities/Vehicle";
+import IStorageProvider from "@shared/container/providers/StorageProvider/models/IStorageProvider";
+import IFeaturesRepository from "../repositories/IFeaturesRepository";
+import Feature from "../infra/typeorm/entities/Feature";
 
 interface Request {
     user_id: string;
@@ -12,6 +15,10 @@ interface Request {
     model: string;
     plate: string;
     daily_price: number;
+    features: string[];
+    images: {
+        image: string;
+    }[];
     fuel: 'gasoline' | 'flex' | 'eletrical';
     gear: 'manual' | 'automatic';
 }
@@ -24,10 +31,16 @@ export default class CreateVehicleService {
 
         @inject('VehiclesRepository')
         private vehiclesRepository: IVehiclesRepository,
+
+        @inject('FeaturesRepository')
+        private featuresRepository: IFeaturesRepository,
+
+        @inject('StorageProvider')
+        private storageProvider: IStorageProvider,
     ) {}
 
     public async execute(
-        { user_id, name, brand, model, plate, daily_price, fuel, gear }: Request
+        { user_id, name, brand, model, plate, daily_price, fuel, gear, images, features }: Request
     ): Promise<Vehicle> {
         const user = await this.usersRepository.findById(user_id);
 
@@ -48,6 +61,18 @@ export default class CreateVehicleService {
         if (daily_price < 0) {
             throw new AppError('Daily price cannot be less than 0');
         }
+        
+        if (images.length > 7) {
+            throw new AppError('You cannot upload more than 5 images');
+        }
+
+        let featuresQuery;
+
+        if (features) {
+            featuresQuery = await this.featuresRepository.findManyById(features);
+        }
+
+        await this.storageProvider.saveFiles(images.map(image => image.image));
 
         const vehicle = await this.vehiclesRepository.create({
             name,
@@ -57,6 +82,8 @@ export default class CreateVehicleService {
             daily_price,
             fuel,
             gear,
+            images,
+            features: featuresQuery,
         });
 
         return vehicle;

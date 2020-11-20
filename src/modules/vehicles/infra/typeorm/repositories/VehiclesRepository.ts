@@ -6,7 +6,6 @@ import IVehiclesRepository from "@modules/vehicles/repositories/IVehiclesReposit
 import ICreateVehicleDTO from "@modules/vehicles/dtos/ICreateVehicleDTO";
 import IListVehiclesDTO from "@modules/vehicles/dtos/IListVehiclesDTO";
 import IAddFeatureToVehicleDTO from "@modules/vehicles/dtos/IAddFeatureToVehicleDTO";
-import Feature from "../entities/Feature";
 
 export default class VehiclesRepository implements IVehiclesRepository {
     private ormRepository: Repository<Vehicle>

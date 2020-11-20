@@ -33,6 +33,7 @@ router.post(
             daily_price: Joi.number().required(),
             fuel: Joi.string().required().max(20),
             gear: Joi.string().required().max(20),
+            features: Joi.string(),
         }
     }),
     vehiclesController.create,
