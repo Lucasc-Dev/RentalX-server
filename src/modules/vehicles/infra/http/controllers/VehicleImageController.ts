@@ -6,11 +6,14 @@ export default class VehicleImageController {
     public async update(request: Request, response: Response): Promise<Response> {
         const { id: user_id } = request.user;
         const { vehicle_id } = request.params;    
-        const { filename } = request.file;
+
+        const requestImages = request.files as Express.Multer.File[];
+        
+        const images = requestImages.map(file => file.filename);
 
         const updateVehicleImage = container.resolve(UpdateVehicleImageService);
 
-        const vehicle = await updateVehicleImage.execute({ user_id, vehicle_id, filename });
+        const vehicle = await updateVehicleImage.execute({ user_id, vehicle_id, images });
 
         return response.json(vehicle);
     }

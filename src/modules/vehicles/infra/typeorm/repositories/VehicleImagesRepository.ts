@@ -16,4 +16,8 @@ export default class VehicleImageRepository implements IVehicleImagesRepository 
 
         return vehicleImage;
     }
+
+    public async save(data: VehicleImage): Promise<void> {
+        await this.ormRepository.create(data);
+    }
 }

@@ -1,17 +1,20 @@
 import { Brackets, getRepository, Repository } from "typeorm";
 
+import Feature from "../entities/Feature";
 import Vehicle from "../entities/Vehicle";
+import VehicleImage from "../entities/VehicleImage";
 
 import IVehiclesRepository from "@modules/vehicles/repositories/IVehiclesRepository";
 import ICreateVehicleDTO from "@modules/vehicles/dtos/ICreateVehicleDTO";
 import IListVehiclesDTO from "@modules/vehicles/dtos/IListVehiclesDTO";
-import IAddFeatureToVehicleDTO from "@modules/vehicles/dtos/IAddFeatureToVehicleDTO";
 
 export default class VehiclesRepository implements IVehiclesRepository {
-    private ormRepository: Repository<Vehicle>
+    private ormRepository: Repository<Vehicle>;
+    private imagesOrmRepository: Repository<VehicleImage>;
 
     constructor() {
         this.ormRepository = getRepository(Vehicle);
+        this.imagesOrmRepository = getRepository(VehicleImage);
     }
 
     public async create(data: ICreateVehicleDTO): Promise<Vehicle> {
@@ -115,7 +118,7 @@ export default class VehiclesRepository implements IVehiclesRepository {
         return vehicles;
     }
 
-    public async addFeaturesToVehicle({ vehicle, features }: IAddFeatureToVehicleDTO): Promise<Vehicle | undefined> {
+    public async addFeaturesToVehicle(vehicle: Vehicle, features: Feature[]): Promise<Vehicle> {
         await this.ormRepository
             .createQueryBuilder('vehicle')
             .relation(Vehicle, 'features')

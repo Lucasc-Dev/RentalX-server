@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
 import { Expose } from "class-transformer";
 import Vehicle from "./Vehicle";
 
-@Entity()
+@Entity('vehicle_image')
 export default class VehicleImage {
     @PrimaryGeneratedColumn('uuid')
     id: string;

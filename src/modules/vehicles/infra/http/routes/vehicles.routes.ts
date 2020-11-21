@@ -55,6 +55,6 @@ router.put(
 );
 router.post('/:vehicle_id', vehicleFeaturesController.create);
 router.delete('/:vehicle_id', vehiclesController.delete);
-router.patch('/image/:vehicle_id', upload.single('image'), vehicleImageController.update);
+router.patch('/image/:vehicle_id', upload.array('images'), vehicleImageController.update);
 
 export default router;
