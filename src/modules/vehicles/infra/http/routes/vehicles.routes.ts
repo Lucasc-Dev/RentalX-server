@@ -40,6 +40,7 @@ router.post(
 );
 router.put(
     '/:vehicle_id', 
+    upload.array('images'),
     celebrate({
         [Segments.BODY]: {
             name: Joi.string().required().min(1).max(30),
@@ -49,6 +50,7 @@ router.put(
             daily_price: Joi.number().required(),
             fuel: Joi.string().required().max(20),
             gear: Joi.string().required().max(20),
+            features: Joi.string(),
         }
     }),
     vehiclesController.update,

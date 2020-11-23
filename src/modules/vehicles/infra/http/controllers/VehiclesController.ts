@@ -76,11 +76,18 @@ export default class VehiclesController {
             name,
             brand,
             model,
-            fuel,
-            gear,
             plate,
             daily_price,
+            fuel,
+            gear,
+            features,
         } = request.body;
+
+        const parsedFeatures: string[] = features.split(',').map((feature: string) => feature.trim());
+
+        const requestImages = request.files as Express.Multer.File[];
+        
+        const images = requestImages.map(file => ({ image: file.filename }));
 
         const updateVehicle = container.resolve(UpdateVehicleService);
 
@@ -94,6 +101,8 @@ export default class VehiclesController {
             gear,
             plate,
             daily_price,
+            images,
+            features: parsedFeatures,
         });
 
         return response.json(classToClass(vehicle));
