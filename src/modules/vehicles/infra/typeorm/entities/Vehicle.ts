@@ -41,7 +41,7 @@ export default class Vehicle {
     features: Feature[];
 
     @OneToMany(type => VehicleImage, image => image.vehicle, { 
-        cascade: ['insert', 'update'],
+        cascade: true,
         eager: true,
     })
     images: VehicleImage[];

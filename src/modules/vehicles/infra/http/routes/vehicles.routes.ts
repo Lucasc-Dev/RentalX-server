@@ -7,11 +7,9 @@ import uploadConfig from '@config/upload';
 import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
 
 import VehiclesController from '../controllers/VehiclesController';
-import VehicleImageController from '../controllers/VehicleImageController';
 import VehicleFeaturesController from '../controllers/VehicleFeaturesController';
 
 const vehiclesController = new VehiclesController();
-const vehicleImageController = new VehicleImageController();
 const vehicleFeaturesController = new VehicleFeaturesController();
 
 const router = Router();
@@ -57,6 +55,5 @@ router.put(
 );
 router.post('/:vehicle_id', vehicleFeaturesController.create);
 router.delete('/:vehicle_id', vehiclesController.delete);
-router.patch('/image/:vehicle_id', upload.array('images'), vehicleImageController.update);
 
 export default router;

@@ -2,7 +2,6 @@ import { Brackets, getRepository, Repository } from "typeorm";
 
 import Feature from "../entities/Feature";
 import Vehicle from "../entities/Vehicle";
-import VehicleImage from "../entities/VehicleImage";
 
 import IVehiclesRepository from "@modules/vehicles/repositories/IVehiclesRepository";
 import ICreateVehicleDTO from "@modules/vehicles/dtos/ICreateVehicleDTO";
@@ -10,11 +9,9 @@ import IListVehiclesDTO from "@modules/vehicles/dtos/IListVehiclesDTO";
 
 export default class VehiclesRepository implements IVehiclesRepository {
     private ormRepository: Repository<Vehicle>;
-    private imagesOrmRepository: Repository<VehicleImage>;
 
     constructor() {
         this.ormRepository = getRepository(Vehicle);
-        this.imagesOrmRepository = getRepository(VehicleImage);
     }
 
     public async create(data: ICreateVehicleDTO): Promise<Vehicle> {

@@ -6,7 +6,6 @@ import IVehiclesRepository from "../repositories/IVehiclesRepository";
 import Vehicle from "../infra/typeorm/entities/Vehicle";
 import IStorageProvider from "@shared/container/providers/StorageProvider/models/IStorageProvider";
 import IFeaturesRepository from "../repositories/IFeaturesRepository";
-import Feature from "../infra/typeorm/entities/Feature";
 
 interface Request {
     user_id: string;
