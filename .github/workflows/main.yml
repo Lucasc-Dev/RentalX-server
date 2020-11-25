@@ -39,6 +39,15 @@ jobs:
         run: yarn build
           
       # Copy dist to the server
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: ".,!node_modules"
+          target: "app/rentalx-api"
         
       # Replace the existent dist on server for the new dist
       # Execute "yarn" on the server
