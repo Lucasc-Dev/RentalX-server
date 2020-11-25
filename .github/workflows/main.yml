@@ -48,8 +48,17 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           source: ".,!node_modules"
           target: "app/rentalx-api"
-        
-      # Replace the existent dist on server for the new dist
-      # Execute "yarn" on the server
-      # Execute the migrations
-      # Restart the node server
+      
+      # Execute "yarn", migrations and restart the server
+      - name: Run production scripts
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: | 
+            cd ~/app/rentalx-api
+            yarn
+            ./node_modules/.bin/typeorm migration:run
+            pm2 restart rental-api
