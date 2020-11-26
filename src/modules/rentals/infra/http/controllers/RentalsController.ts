@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { classToClass } from "class-transformer";
 import { container } from "tsyringe";
 
 import CreateRentService from "@modules/rentals/services/CreateRentalService";
@@ -13,7 +14,7 @@ export default class RentalsController {
 
         const rentals = await listUserRentals.execute({ user_id, page: Number(page) });
         
-        return response.json(rentals);
+        return response.json(classToClass(rentals));
     }
 
     public async create(request: Request, response: Response): Promise<Response> {
@@ -33,6 +34,6 @@ export default class RentalsController {
             user_id, vehicle_id, start_date, end_date
         });
         
-        return response.json(rental);
+        return response.json(classToClass(rental));
     }
 }

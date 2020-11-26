@@ -55,7 +55,8 @@ export default class RentalsRepository implements IRentalsRepository {
     public async listUserRentals(id: string, page: number): Promise<[Rental[], number]> {
         const rentals = await this.ormRepository
             .createQueryBuilder('rental')
-            .innerJoinAndSelect('rental.vehicle', 'vehicle')
+            .leftJoinAndSelect('rental.vehicle', 'vehicle')
+            .leftJoinAndSelect('vehicle.images', 'images')
             .where('rental.user_id = :id', { id })
             .orderBy('rental.created_at', 'DESC')
             .skip(page * 5)

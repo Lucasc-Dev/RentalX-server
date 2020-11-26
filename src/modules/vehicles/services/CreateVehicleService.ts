@@ -62,7 +62,7 @@ export default class CreateVehicleService {
         }
         
         if (images.length > 7) {
-            throw new AppError('You cannot upload more than 5 images');
+            throw new AppError('You cannot upload more than 7 images');
         }
 
         let featuresQuery;
