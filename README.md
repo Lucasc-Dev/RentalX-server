@@ -1,5 +1,7 @@
 <h1 align="center">
-  Backend of the RentX Aplication!
+  RentalX Aplication!
 </h1>
 
-RentX is a platform to find and rent a vehicle using your smartphone!
+🚗 RentalX Backend - this is a Node.JS application of a fictional rental company, made to help you to find and rent a vehicle on your smartphone!
+
+
